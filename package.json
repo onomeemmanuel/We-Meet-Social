@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "cd Client && npm install && npm run build && cd ..",
+    "build": "cd Client && npm install --production=false && npm run build && cd ..",
     "start": "node Server/src/server.js",
     "dev": "nodemon Server/src/server.js",
     "test": "jest"
