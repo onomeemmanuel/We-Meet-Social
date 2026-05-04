@@ -129,6 +129,14 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
+  const [theme, setTheme] = useState('dark')
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme')
+    if (storedTheme === 'light' || storedTheme === 'dark') {
+      setTheme(storedTheme)
+    }
+  }, [])
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -193,6 +201,12 @@ function App() {
     if (text) {
       setTimeout(() => setMessage(''), 4000)
     }
+  }
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark'
+    setTheme(nextTheme)
+    localStorage.setItem('theme', nextTheme)
   }
 
   const readFileAsDataUrl = (file) =>
@@ -664,15 +678,43 @@ function App() {
   )
 
   return (
-    <div className={`app-shell ${mode === 'app' ? 'dark-theme' : ''}`}>
+    <div className={`app-shell ${mode === 'app' ? `theme-${theme}` : ''}`}>
       {mode === 'auth' ? (
-        <div className="card">
-          <header className="app-title h1">
-            <h1>We Meet Social</h1>
-            <p>Login or sign up to connect with people and share posts.</p>
-          </header>
+        <div className="auth-page">
+          <section className="auth-side">
+            <div className="auth-brand">
+              <div className="brand-logo">
+                <div className="logo-mark">WMS</div>
+                <div>
+                  <p className="brand-name">We Meet Social</p>
+                  <span className="brand-tagline">Your community, beautifully connected.</span>
+                </div>
+              </div>
+              <span className="eyebrow">Welcome to</span>
+              <h1>We Meet Social</h1>
+              <p>Connect with creators, build your network, and share your story in a beautiful, modern space.</p>
+              <ul className="auth-highlights">
+                <li>Fast, secure authentication</li>
+                <li>Personalized feed and profile</li>
+                <li>Follow people and stay inspired</li>
+                <li>Share your ideas with the world</li>
+                <li>News and trnding updates</li>
+              </ul>
+            </div>
+          </section>
 
-          <form className="auth-form" onSubmit={handleSubmit}>
+          <section className="auth-card-wrapper">
+            <div className="card">
+              <header className="app-title">
+                <h2>{authMode === 'login' ? 'Welcome back' : 'Create your account'}</h2>
+                <p>
+                  {authMode === 'login'
+                    ? 'Login to continue to your personalized social dashboard.'
+                    : 'Start your journey with We Meet Social in just a few steps.'}
+                </p>
+              </header>
+
+              <form className="auth-form" onSubmit={handleSubmit}>
             {authMode === 'login' ? (
               <>
                 <label>
@@ -779,12 +821,19 @@ function App() {
             </div>
           </form>
         </div>
+          </section>
+        </div>
       ) : (
         <div className="feed">
           <header className="feed-header">
             <h1>We Meet Social</h1>
             <div className="user-info">
               <span>{user ? `Welcome, ${user.first_name}!` : 'Welcome, guest!'}</span>
+              {user && (
+                <button type="button" className="theme-toggle secondary-button" onClick={toggleTheme}>
+                  {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+                </button>
+              )}
               {user ? (
                 <button type="button" className="logout-button" onClick={handleLogout}>
                   Logout
