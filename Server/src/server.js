@@ -11,7 +11,19 @@ dotenv.config({ path: path.resolve(__dirname, '../../Server/.env') })
 const app = express()
 app.use(cors())
 app.use(express.json())
+
+// Serve static files from Client/dist
+const clientBuildPath = path.resolve(__dirname, '../../Client/dist')
+app.use(express.static(clientBuildPath))
+
+// API routes
 app.use('/api', indexRoutes)
+
+// Serve React frontend for all other routes (SPA fallback)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(clientBuildPath, 'index.html'))
+})
+
 app.use(errorHandler)
 
 module.exports = app
