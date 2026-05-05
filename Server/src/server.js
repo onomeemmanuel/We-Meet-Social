@@ -20,7 +20,7 @@ app.use(express.static(clientBuildPath))
 app.use('/api', indexRoutes)
 
 // Serve React frontend for all other routes (SPA fallback)
-app.get('/*', (req, res) => {
+app.use((req, res) => {
   res.sendFile(path.join(clientBuildPath, 'index.html'))
 })
 
